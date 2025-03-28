@@ -1,7 +1,7 @@
 resource "aws_security_group" "this" {
   name        = "k8-cp-sg"
   description = "Allow TLS inbound traffic and all outbound traffic"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = var.vpc_id
 
   tags = {
     Name = "allow_tls"
@@ -70,8 +70,11 @@ locals {
 
     }
 }
-variable "vpc_id" {}
-
+# variable "vpc_id" {}
+data "aws_region" "current" {}
+output "region" {
+  value = data.aws_region.current.name
+}
 data "aws_vpc" "selected" {
   id = var.vpc_id
 }
