@@ -29,6 +29,7 @@ sysctl net.ipv4.ip_forward
 
 echo "Installing containerd..."
 sudo apt-get update && sudo apt-get install -y containerd
+sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
 sudo systemctl restart containerd
@@ -44,7 +45,9 @@ sudo apt-mark hold kubelet kubeadm kubectl
 sudo systemctl enable --now kubelet
 
 # Fetch EC2 private IP
-PRIVATE_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
+TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" \
+  -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+PRIVATE_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
 if [[ -z "$PRIVATE_IP" ]]; then
     echo "Error: Unable to retrieve EC2 private IP."
     exit 1
