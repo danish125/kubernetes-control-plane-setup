@@ -5,17 +5,17 @@ resource "aws_codebuild_project" "github_runner" {
 
   source {
     type            = "GITHUB"
-    location        = "https://github.com/danish125/BayStoreSeq"
+    location        = var.repository_location
     git_clone_depth = 1
     auth {
         type = "CODECONNECTIONS"
-        resource = "arn:aws:codeconnections:eu-west-2:339713106964:connection/5cc1a0c0-9374-4a9b-a838-0a6ed31d5bac"
+        resource = var.connector_arn
     }
   }
 #   secondary_sources {
 #     type = "GITHUB"
 #     source_identifier = "demo"
-#     location = "https://github.com/danish125/BayStoreSeq"
+#     location = var.repository_location
 
 #     auth {
 #         type = "CODECONNECTIONS"
