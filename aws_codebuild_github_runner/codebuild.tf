@@ -39,7 +39,15 @@ resource "aws_codebuild_project" "github_runner" {
   artifacts {
     type = "NO_ARTIFACTS"
   }
+  vpc_config {
+    vpc_id = data.aws_vpc.selected.id
 
+    subnets = var.subnet_ids
+
+    security_group_ids = [
+      aws_security_group.allow_tls.id
+    ]
+  }
   tags = {
     Environment = "Dev"
   }
