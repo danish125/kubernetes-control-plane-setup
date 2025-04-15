@@ -27,11 +27,28 @@ resource "aws_codebuild_project" "github_runner" {
     image                       = "aws/codebuild/standard:5.0"
     type                        = "LINUX_CONTAINER"
     privileged_mode             = false
+
+    environment_variable {
+      name  = "TFC_AGENT_TOKEN"
+      value = ""
+    }
+    environment_variable {
+      name  = "TFC_AGENT_NAME"
+      value = "agent"
+    #   type  = "PARAMETER_STORE"
+
+    }
+
+
     # environment_variables = [
     #   {
-    #     name  = "GITHUB_TOKEN"
+    #     name  = "TFC_AGENT_TOKEN"
     #     value = "<your-github-token>"
-    #     type  = "PLAINTEXT"
+    #     type  = ""
+    #   },
+    #   {
+    #     name  = "TFC_AGENT_NAME"
+    #     value = "agent"
     #   }
     # ]
   }
@@ -39,15 +56,15 @@ resource "aws_codebuild_project" "github_runner" {
   artifacts {
     type = "NO_ARTIFACTS"
   }
-  vpc_config {
-    vpc_id = data.aws_vpc.selected.id
+#   vpc_config {
+#     vpc_id = data.aws_vpc.selected.id
 
-    subnets = var.subnet_ids
+#     subnets = var.subnet_ids
 
-    security_group_ids = [
-      aws_security_group.allow_tls.id
-    ]
-  }
+#     security_group_ids = [
+#       aws_security_group.allow_tls.id
+#     ]
+#   }
   tags = {
     Environment = "Dev"
   }
