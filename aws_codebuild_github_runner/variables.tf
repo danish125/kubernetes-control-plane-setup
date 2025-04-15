@@ -13,3 +13,6 @@ variable "subnet_ids" {
   type = list
 
 }
+variable "secret_arn" {
+  type = string
+}
