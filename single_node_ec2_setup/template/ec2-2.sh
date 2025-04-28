@@ -59,3 +59,8 @@ echo "Initializing Kubernetes cluster..."
 sudo kubeadm init --apiserver-advertise-address "$PRIVATE_IP" --pod-network-cidr 10.244.0.0/16
 
 echo "User data script completed successfully."
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml

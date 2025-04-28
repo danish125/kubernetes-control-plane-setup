@@ -19,7 +19,7 @@ resource "aws_instance" "this" {
   instance_type = "t2.medium"
   vpc_security_group_ids = [aws_security_group.this.id]
   user_data = file("./template/ec2-2.sh")
-  key_name = "kubernetes-controlplane"
+  key_name = "kubernetes-controlplane-euw2"
   tags = {
     Name = "Kubernetes-single-node-control-plane"
     iac = "Terraform"
