@@ -27,6 +27,17 @@ EOF
 sudo sysctl --system
 sysctl net.ipv4.ip_forward
 
+
+sudo modprobe br_netfilter
+echo "br_netfilter" | sudo tee /etc/modules-load.d/br_netfilter.conf
+sudo tee /etc/sysctl.d/99-kubernetes-cri.conf <<EOF
+net.bridge.bridge-nf-call-iptables = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+
+sudo sysctl --system
+
+
 echo "Installing containerd..."
 sudo apt-get update && sudo apt-get install -y containerd
 sudo mkdir -p /etc/containerd
