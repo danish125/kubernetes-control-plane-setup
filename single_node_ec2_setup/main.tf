@@ -15,10 +15,11 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_instance" "this" {
+  count = 2
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.medium"
   vpc_security_group_ids = [aws_security_group.this.id]
-  user_data = file("./template/ec2-2.sh")
+  user_data = file("./template/ec2-3.sh")
   key_name = "kubernetes-controlplane-euw2"
   tags = {
     Name = "Kubernetes-single-node-control-plane"

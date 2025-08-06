@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2025-07-19T17:13:04Z"
+  generation: 1
+  name: purple-mod
+  namespace: default
+  resourceVersion: "955"
+  uid: 525e5c82-2548-457d-868f-b06b8021fa62
+spec:
+  containers:
+  - command:
+    - sh
+    - -c
+    - echo The app is running! && sleep 3600
+    image: busybox:1.28
+    imagePullPolicy: IfNotPresent
+    name: purple-container
+    resources: 
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+  dnsPolicy: ClusterFirst
+  initContainers:
+  - command:
+    - sh
+    - -c
+    - sleep 10
+    image: busybox:1.28
+    imagePullPolicy: IfNotPresent
+    name: warm-up-1
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+  - command:
+    - sh
+    - -c
+    - sleep 3600
+    image: busybox:1.28
+    imagePullPolicy: IfNotPresent
+    name: warm-up-2
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+    restartPolicy: Always
+  nodeName: controlplane
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+
+
+
+
+# Allocated resources:
+#   (Total limits may be over 100 percent, i.e., overcommitted.)
+#   Resource           Requests    Limits
+#   --------           --------    ------
+#   cpu                300m (1%)   200m (1%)
+#   memory             268Mi (0%)  426Mi (0%)
+#   ephemeral-storage  0 (0%)      0 (0%)
+#   hugepages-1Gi      0 (0%)      0 (0%)
+#   hugepages-2Mi      0 (0%)      0 (0%)
+
+
+# Allocated resources:
+#   (Total limits may be over 100 percent, i.e., overcommitted.)
+#   Resource           Requests    Limits
+#   --------           --------    ------
+#   cpu                200m (1%)   0 (0%)
+#   memory             140Mi (0%)  170Mi (0%)
+#   ephemeral-storage  0 (0%)      0 (0%)
+#   hugepages-1Gi      0 (0%)      0 (0%)
+#   hugepages-2Mi      0 (0%)      0 (0%)
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    name: purple-mod
+  name: purple-mod-depl
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: purple-mod
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        name: purple-mod
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - echo The app is running! && sleep 3600
+        image: busybox:1.28
+        imagePullPolicy: IfNotPresent
+        name: purple-container
+        resources: 
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - sleep 10
+        image: busybox:1.28
+        imagePullPolicy: IfNotPresent
+        name: warm-up-1
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+      - command:
+        - sh
+        - -c
+        - sleep 3600
+        image: busybox:1.28
+        imagePullPolicy: IfNotPresent
+        name: warm-up-2
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        restartPolicy: Always
+      nodeName: controlplane
+      tolerations:
+      - effect: NoExecute
+        key: node.kubernetes.io/not-ready
+        operator: Exists
+        tolerationSeconds: 300
+      - effect: NoExecute
+        key: node.kubernetes.io/unreachable
+        operator: Exists
+        tolerationSeconds: 300
+
+status: {}
