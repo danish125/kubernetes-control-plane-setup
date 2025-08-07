@@ -1,0 +1,20 @@
+apiVersion: kubeadm.k8s.io/v1beta3
+caCertPath: /etc/kubernetes/pki/ca.crt
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: k8-lb-d514f9d864d13eb1.elb.eu-west-2.amazonaws.com:6443
+    token: abcdef.0123456789abcdef
+    unsafeSkipCAVerification: true
+  timeout: 5m0s
+  tlsBootstrapToken: abcdef.0123456789abcdef
+kind: JoinConfiguration
+controlPlane:
+  certificateKey: 50e6202e855167ea12de7103b9471a050aca7e350f37b904e91dbce41d27bbf3
+  localAPIEndpoint:
+    advertiseAddress: 172.31.47.108
+    bindPort: 6443
+nodeRegistration:
+  criSocket: unix:///var/run/containerd/containerd.sock
+  imagePullPolicy: IfNotPresent
+  name: control-plane-2
+  taints: null

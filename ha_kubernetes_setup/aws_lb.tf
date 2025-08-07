@@ -11,7 +11,7 @@ resource "aws_lb" "k8_lb" {
   load_balancer_type = "network"
   subnets            = data.aws_subnets.default.ids
 
-  enable_deletion_protection = true
+  enable_deletion_protection = false
 
   tags = {
     Environment = "production"

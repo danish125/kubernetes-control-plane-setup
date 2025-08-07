@@ -39,7 +39,21 @@ sudo sysctl --system
 
 
 echo "Installing containerd..."
-sudo apt-get update && sudo apt-get install -y containerd
+# sudo apt-get update && sudo apt-get install -y containerd
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install containerd.io
+
+wget https://github.com/containernetworking/plugins/releases/download/v1.7.1/cni-plugins-linux-amd64-v1.7.1.tgz
+sudo mkdir -p /opt/cni/bin
+sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.7.1.tgz
+
 sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
@@ -55,26 +69,26 @@ sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 sudo systemctl enable --now kubelet
 
-# Fetch EC2 private IP
-TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" \
-  -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-PRIVATE_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
-if [[ -z "$PRIVATE_IP" ]]; then
-    echo "Error: Unable to retrieve EC2 private IP."
-    exit 1
-fi
-echo "EC2 Private IP: $PRIVATE_IP"
+# # Fetch EC2 private IP
+# TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" \
+#   -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+# PRIVATE_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
+# if [[ -z "$PRIVATE_IP" ]]; then
+#     echo "Error: Unable to retrieve EC2 private IP."
+#     exit 1
+# fi
+# echo "EC2 Private IP: $PRIVATE_IP"
 
-# Initialize Kubernetes
-echo "Initializing Kubernetes cluster..."
-sudo kubeadm init --apiserver-advertise-address "$PRIVATE_IP" --pod-network-cidr 10.244.0.0/16
+# # Initialize Kubernetes
+# echo "Initializing Kubernetes cluster..."
+# sudo kubeadm init --apiserver-advertise-address "$PRIVATE_IP" --pod-network-cidr 10.244.0.0/16
 
-echo "User data script completed successfully."
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+# echo "User data script completed successfully."
+# mkdir -p $HOME/.kube
+# sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+# sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+# kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
 
 ####Install AWS CLI####
 sudo apt install unzip curl -y
