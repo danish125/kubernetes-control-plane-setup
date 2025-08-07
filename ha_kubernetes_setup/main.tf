@@ -36,7 +36,7 @@ resource "aws_instance" "control_plane_nodes" {
 #   ami           = data.aws_ami.ubuntu.id
 #   instance_type = "t2.medium"
 #   vpc_security_group_ids = [aws_security_group.this.id]
-#   user_data = file("./template/worker-node.sh")
+#   user_data = file("./template/worker-node-129.sh")
 #   key_name = "kubernetes-controlplane-euw2"
 #   tags = {
 #     Name = "Kubernetes-worker-node-${count.index}"
