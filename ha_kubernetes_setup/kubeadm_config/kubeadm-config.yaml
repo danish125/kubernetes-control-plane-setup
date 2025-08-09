@@ -29,8 +29,8 @@ etcd:
     dataDir: /var/lib/etcd
 imageRepository: registry.k8s.io
 kind: ClusterConfiguration
-kubernetesVersion: 1.29.0
-controlPlaneEndpoint: k8-lb-d514f9d864d13eb1.elb.eu-west-2.amazonaws.com:6443
+kubernetesVersion: "1.29.0"
+controlPlaneEndpoint: k8-lb-34a12b6ac52b35d4.elb.eu-west-2.amazonaws.com:6443
 networking:
   dnsDomain: cluster.local
   serviceSubnet: 10.96.0.0/12
